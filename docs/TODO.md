@@ -1,9 +1,9 @@
 # **TODOリスト**
 
 #### **1. 環境構築**
-- [ ] Vite + React + TypeScriptのセットアップ  
-- [ ] Jest + React Testing Libraryのセットアップ  
-- [ ] ESLint + Prettierの設定  
+- [x] Vite + React + TypeScriptのセットアップ  
+- [x] Jest + React Testing Libraryのセットアップ  
+- [x] ESLint + Prettierの設定  
 
 #### **2. オセロの基本ロジック（TDD）**
 - [ ] 盤面のデータ構造を決定  
