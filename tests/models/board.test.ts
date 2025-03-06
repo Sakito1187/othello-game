@@ -151,3 +151,92 @@ describe('有効手の判定', () => {
     expect(board.isValidMove(5, 4, CellState.Black)).toBe(true)
   })
 })
+
+describe('石の反転', () => {
+  test('水平方向の石が反転すること', () => {
+    const board = new Board()
+    board.cells[3][3] = CellState.White
+    board.cells[3][4] = CellState.White
+    board.cells[3][5] = CellState.Empty
+    board.cells[3][2] = CellState.Black
+
+    board.placeStone(3, 5, CellState.Black)
+
+    expect(board.cells[3][3]).toBe(CellState.Black)
+    expect(board.cells[3][4]).toBe(CellState.Black)
+  })
+
+  test('垂直方向の石が反転すること', () => {
+    const board = new Board()
+    board.cells[2][4] = CellState.Black
+    board.cells[3][4] = CellState.White
+    board.cells[4][4] = CellState.White
+    board.cells[5][4] = CellState.Empty
+
+    board.placeStone(5, 4, CellState.Black)
+
+    expect(board.cells[3][4]).toBe(CellState.Black)
+    expect(board.cells[4][4]).toBe(CellState.Black)
+  })
+
+  test('斜め方向の石が反転すること', () => {
+    const board = new Board()
+    board.cells[2][2] = CellState.Black
+    board.cells[3][3] = CellState.White
+    board.cells[4][4] = CellState.White
+    board.cells[5][5] = CellState.Empty
+
+    board.placeStone(5, 5, CellState.Black)
+
+    expect(board.cells[3][3]).toBe(CellState.Black)
+    expect(board.cells[4][4]).toBe(CellState.Black)
+  })
+
+  test('複数方向の石が同時に反転すること', () => {
+    const board = new Board()
+    /*
+    Before
+    . . . . . . . .
+    . . . . . . . .
+    . . . . . . . .
+    . . . B W B . .
+    . . . W W W . .
+    . . . B W o . .
+    . . . . . . . .
+    . . . . . . . .
+
+    After
+    . . . . . . . .
+    . . . . . . . .
+    . . . . . . . .
+    . . . B W B . .
+    . . . W B B . .
+    . . . B B B . .
+    . . . . . . . .
+    . . . . . . . .
+    */
+    // 十字に白を配置
+    board.cells[3][4] = CellState.White
+    board.cells[4][3] = CellState.White
+    board.cells[4][5] = CellState.White
+    board.cells[5][4] = CellState.White
+    // 端に黒を配置
+    board.cells[3][3] = CellState.Black
+    board.cells[3][5] = CellState.Black
+    board.cells[5][3] = CellState.Black
+
+    board.placeStone(5, 5, CellState.Black)
+
+    expect(board.cells[3][4]).toBe(CellState.White)
+    expect(board.cells[4][3]).toBe(CellState.White)
+    expect(board.cells[4][4]).toBe(CellState.Black)
+    expect(board.cells[4][5]).toBe(CellState.Black)
+    expect(board.cells[5][4]).toBe(CellState.Black)
+    expect(board.cells[5][5]).toBe(CellState.Black)
+  })
+
+  test('石を置けない位置に石を置くと例外が発生すること', () => {
+    const board = new Board()
+    expect(() => board.placeStone(3, 3, CellState.Black)).toThrow()
+  })
+})
