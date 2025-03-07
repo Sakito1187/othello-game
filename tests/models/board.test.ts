@@ -240,3 +240,69 @@ describe('石の反転', () => {
     expect(() => board.placeStone(3, 3, CellState.Black)).toThrow()
   })
 })
+
+describe('ゲーム終了判定', () => {
+  test('両プレイヤーとも置けない場合、ゲーム終了となること', () => {
+    const board = new Board()
+    // 全て黒で埋める
+    for (let i = 0; i < board.size; i++) {
+      for (let j = 0; j < board.size; j++) {
+        board.cells[i][j] = CellState.Black
+      }
+    }
+    expect(board.isGameOver()).toBe(true)
+  })
+
+  test('片方のプレイヤーが置ける場合、ゲーム終了とならないこと', () => {
+    const board = new Board()
+    // 初期盤面では黒が置ける
+    expect(board.isGameOver()).toBe(false)
+  })
+
+  test('空きマスがあっても両者置けない場合、ゲーム終了となること', () => {
+    const board = new Board()
+    /*
+    B B B . B B B B
+    B B B B B B B B
+    B B B B B B B B
+    B B B B B B B B
+    W W W B W W W B
+    W W W B W W W W
+    W W W B W W W W
+    W W W B W W W W
+    */
+    // 上半分を黒、下半分を白で埋め、1マスだけ空ける
+    for (let i = 0; i < board.size; i++) {
+      for (let j = 0; j < board.size; j++) {
+        if (i < 4) {
+          board.cells[i][j] = CellState.Black
+        } else {
+          board.cells[i][j] = CellState.White
+        }
+      }
+    }
+    board.cells[0][3] = CellState.Empty
+    board.cells[4][3] = CellState.Black
+    board.cells[4][7] = CellState.Black
+    board.cells[5][3] = CellState.Black
+    board.cells[6][3] = CellState.Black
+    board.cells[7][3] = CellState.Black
+    expect(board.isGameOver()).toBe(true)
+  })
+
+  test('勝者が正しく判定されること', () => {
+    const board = new Board()
+    // 上半分を黒、下半分を白で埋め、1マスだけ黒にする
+    for (let i = 0; i < board.size; i++) {
+      for (let j = 0; j < board.size; j++) {
+        if (i < 4) {
+          board.cells[i][j] = CellState.Black
+        } else {
+          board.cells[i][j] = CellState.White
+        }
+      }
+    }
+    board.cells[4][0] = CellState.Black
+    expect(board.getWinner()).toBe(CellState.Black)
+  })
+})

@@ -106,4 +106,33 @@ export class Board {
       currentCol += direction.col
     }
   }
+
+  isGameOver(): boolean {
+    return this.getValidMoves(CellState.Black).length === 0 &&
+      this.getValidMoves(CellState.White).length === 0
+  }
+
+  private getValidMoves(state: CellState): { row: number, col: number }[] {
+    const validMoves: { row: number, col: number }[] = []
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        if (this.isValidMove(row, col, state)) {
+          validMoves.push({ row, col })
+        }
+      }
+    }
+    return validMoves
+  }
+
+  getWinner(): CellState | null {
+    const blackCount = this.getStoneCount(CellState.Black)
+    const whiteCount = this.getStoneCount(CellState.White)
+    if (blackCount > whiteCount) {
+      return CellState.Black
+    } else if (whiteCount > blackCount) {
+      return CellState.White
+    } else {
+      return null
+    }
+  }
 }
