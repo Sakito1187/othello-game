@@ -112,7 +112,7 @@ export class Board {
       this.getValidMoves(CellState.White).length === 0
   }
 
-  private getValidMoves(state: CellState): { row: number, col: number }[] {
+  getValidMoves(state: CellState): { row: number, col: number }[] {
     const validMoves: { row: number, col: number }[] = []
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
@@ -138,6 +138,9 @@ export class Board {
 
   selectAIMove(cellState: CellState): { row: number, col: number } {
     const bestMoves = this.getMaxFlippableMoves(cellState)
+    if (bestMoves.length === 0) {
+      throw new Error('有効な手がありません')
+    }
     const randomIndex = Math.floor(Math.random() * bestMoves.length)
     return bestMoves[randomIndex]
   }

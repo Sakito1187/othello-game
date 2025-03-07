@@ -314,7 +314,7 @@ describe('AIの手の選択', () => {
     ])
   })
 
-  test('有効な手が1つもない場合、空の配列を返すこと', () => {
+  test('有効な手が1つもない場合、例外が発生すること', () => {
     const board = new Board()
     // 全て黒で埋める
     board.cells = [
@@ -327,7 +327,7 @@ describe('AIの手の選択', () => {
       [1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1],
     ]
-    expect(board.getMaxFlippableMoves(CellState.Black)).toEqual([])
+    expect(() => board.selectAIMove(CellState.Black)).toThrow()
   })
 
   test('端の手が最善手の場合、正しく選択される', () => {
