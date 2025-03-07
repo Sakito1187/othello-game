@@ -277,11 +277,11 @@ describe('AIの手の選択', () => {
       [0, 0, 0, 0, 0, 0, 0, 0],
     ]
 
-    const blackMove = board.getMaxFlippableMoves(CellState.Black)
-    expect(blackMove).toMatchObject([{ row: 5, col: 3 }])
+    const blackMove = board.selectAIMove(CellState.Black)
+    expect(blackMove).toEqual({ row: 5, col: 3 })
 
-    const whiteMove = board.getMaxFlippableMoves(CellState.White)
-    expect(whiteMove).toMatchObject([{ row: 0, col: 5 }])
+    const whiteMove = board.selectAIMove(CellState.White)
+    expect(whiteMove).toEqual({ row: 0, col: 5 })
   })
 
   test('最善手が複数ある場合', () => {
@@ -298,7 +298,7 @@ describe('AIの手の選択', () => {
     ]
 
     const blackMove = board.getMaxFlippableMoves(CellState.Black)
-    expect(blackMove).toMatchObject([
+    expect(blackMove).toEqual([
       { row: 2, col: 3 },
       { row: 3, col: 2 },
       { row: 4, col: 5 },
@@ -306,11 +306,43 @@ describe('AIの手の選択', () => {
     ])
 
     const whiteMove = board.getMaxFlippableMoves(CellState.White)
-    expect(whiteMove).toMatchObject([
+    expect(whiteMove).toEqual([
       { row: 2, col: 4 },
       { row: 3, col: 5 },
       { row: 4, col: 2 },
       { row: 5, col: 3 },
     ])
+  })
+
+  test('有効な手が1つもない場合、空の配列を返すこと', () => {
+    const board = new Board()
+    // 全て黒で埋める
+    board.cells = [
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+    ]
+    expect(board.getMaxFlippableMoves(CellState.Black)).toEqual([])
+  })
+
+  test('端の手が最善手の場合、正しく選択される', () => {
+    const board = new Board()
+    board.cells = [
+      [0, 2, 2, 2, 2, 2, 1],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+    ]
+    const move = board.selectAIMove(CellState.Black)
+    expect(move).toEqual({ row: 0, col: 0 })
   })
 })

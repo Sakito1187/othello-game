@@ -136,8 +136,8 @@ export class Board {
     }
   }
 
-  selectAIMove(): { row: number, col: number } {
-    const bestMoves = this.getMaxFlippableMoves(CellState.Black)
+  selectAIMove(cellState: CellState): { row: number, col: number } {
+    const bestMoves = this.getMaxFlippableMoves(cellState)
     const randomIndex = Math.floor(Math.random() * bestMoves.length)
     return bestMoves[randomIndex]
   }
