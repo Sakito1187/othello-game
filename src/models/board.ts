@@ -135,4 +135,58 @@ export class Board {
       return null
     }
   }
+
+  selectAIMove(): { row: number, col: number } {
+    const bestMoves = this.getMaxFlippableMoves(CellState.Black)
+    const randomIndex = Math.floor(Math.random() * bestMoves.length)
+    return bestMoves[randomIndex]
+  }
+
+  getMaxFlippableMoves(cellState: CellState): { row: number, col: number }[] {
+    const validMoves = this.getValidMoves(cellState)
+    const bestMoves: { row: number, col: number }[] = []
+    let maxFlips = 0
+
+    validMoves.forEach(move => {
+      const flipsCount = this.getFlippablePieces(move.row, move.col, cellState).length
+      if (flipsCount > maxFlips) {
+        maxFlips = flipsCount
+        bestMoves.length = 0
+        bestMoves.push(move)
+      } else if (flipsCount === maxFlips) {
+        bestMoves.push(move)
+      }
+    })
+    return bestMoves
+  }
+
+  private getFlippablePieces(row: number, col: number, state: CellState): { row: number, col: number }[] {
+    const flippablePieces: { row: number, col: number }[] = []
+    this.directions.forEach(dir => {
+      const flippedPieces = this.getFlippablePiecesInDirection(row, col, state, dir)
+      flippablePieces.push(...flippedPieces)
+    })
+    return flippablePieces
+  }
+
+  private getFlippablePiecesInDirection(row: number, col: number, state: CellState, direction: { row: number, col: number }): { row: number, col: number }[] {
+    const flippablePieces: { row: number, col: number }[] = []
+    let currentRow = row + direction.row
+    let currentCol = col + direction.col
+    let hasOpponent = false
+    while (this.isWithinBoard(currentRow, currentCol)) {
+      const currentState = this.getCellState(currentRow, currentCol)
+      if (currentState === this.getOpponentState(state)) {
+        hasOpponent = true
+      } else if (currentState === state && hasOpponent) {
+        return flippablePieces
+      } else {
+        break
+      }
+      flippablePieces.push({ row: currentRow, col: currentCol })
+      currentRow += direction.row
+      currentCol += direction.col
+    }
+    return []
+  }
 }

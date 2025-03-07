@@ -47,16 +47,6 @@ describe('オセロ盤', () => {
 describe('有効手の判定', () => {
   test('初期盤面での有効手が正しく判定されること', () => {
     const board = new Board()
-    /*
-    x . . . . . . .
-    . . . . . . . .
-    . . x o . . . .
-    . . o W B . . .
-    . . . B W o . .
-    . . . . o . . .
-    . . . . . . . .
-    . . . . . . . .
-    */
     // 黒の有効手 (初期盤面では4箇所に置ける)
     expect(board.isValidMove(3, 2, CellState.Black)).toBe(true)
     expect(board.isValidMove(2, 3, CellState.Black)).toBe(true)
@@ -71,16 +61,6 @@ describe('有効手の判定', () => {
 
   test('白の手番での有効手が正しく判定されること', () => {
     const board = new Board()
-    /*
-    . . . . . . . .
-    . . . . . . . .
-    . . . . o . . .
-    . . . W B o . .
-    . . o B W . . .
-    . . . o . . . .
-    . . . . . . . .
-    . . . . . . . .
-    */
     // 白の有効手 (初期盤面では4箇所に置ける)
     expect(board.isValidMove(2, 4, CellState.White)).toBe(true)
     expect(board.isValidMove(3, 5, CellState.White)).toBe(true)
@@ -91,61 +71,47 @@ describe('有効手の判定', () => {
   test('8方向の石の挟み方が判定できること', () => {
     const board = new Board()
     // カスタム盤面を作成して水平方向のテスト
-    board.cells[3][3] = CellState.White
-    board.cells[3][4] = CellState.White
-    board.cells[3][5] = CellState.Empty
-    board.cells[3][2] = CellState.Black
-    /*
-    . . . . . . . .
-    . . . . . . . .
-    . . . . . . . .
-    . . B W W o . .
-    . . . B W . . .
-    . . . . . . . .
-    . . . . . . . .
-    . . . . . . . .
-    */
+    board.cells = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 2, 2, 0, 0, 0],
+      [0, 0, 0, 1, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
     // 白の石を挟んで(3,5)に黒を置ける
     expect(board.isValidMove(3, 5, CellState.Black)).toBe(true)
 
     // 垂直方向のテスト
-    board.cells[2][4] = CellState.Black
-    board.cells[3][4] = CellState.White
-    board.cells[4][4] = CellState.White
-    board.cells[5][4] = CellState.Empty
-    /*
-    . . . . . . . .
-    . . . . . . . .
-    . . . . B . . .
-    . . . W W . . .
-    . . . B W . . .
-    . . . . o . . .
-    . . . . . . . .
-    . . . . . . . .
-    */
+    board.cells = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 0, 2, 2, 0, 0, 0],
+      [0, 0, 0, 1, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
     // 白の石を挟んで(5,4)に黒を置ける
     expect(board.isValidMove(5, 4, CellState.Black)).toBe(true)
-    })
+  })
 
   test('複数方向同時に石を挟めること', () => {
     const board = new Board()
-    /*
-    . . . . . . . .
-    . . . . . . . .
-    . . . . . . . .
-    . . B . B . . .
-    . . W W W . . .
-    . . . . o . . .
-    . . . . . . . .
-    . . . . . . . .
-    */
     // 複数方向に石を挟める盤面を作成
-    board.cells[3][2] = CellState.Black
-    board.cells[3][3] = CellState.Empty
-    board.cells[3][4] = CellState.Black
-    board.cells[4][2] = CellState.White
-    board.cells[4][3] = CellState.White
-    board.cells[4][4] = CellState.White
+    board.cells = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 1, 0, 0, 0],
+      [0, 0, 2, 2, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
 
     // 2方向同時に挟める位置
     expect(board.isValidMove(5, 4, CellState.Black)).toBe(true)
@@ -245,11 +211,16 @@ describe('ゲーム終了判定', () => {
   test('両プレイヤーとも置けない場合、ゲーム終了となること', () => {
     const board = new Board()
     // 全て黒で埋める
-    for (let i = 0; i < board.size; i++) {
-      for (let j = 0; j < board.size; j++) {
-        board.cells[i][j] = CellState.Black
-      }
-    }
+    board.cells = [
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+    ]
     expect(board.isGameOver()).toBe(true)
   })
 
@@ -261,32 +232,16 @@ describe('ゲーム終了判定', () => {
 
   test('空きマスがあっても両者置けない場合、ゲーム終了となること', () => {
     const board = new Board()
-    /*
-    B B B . B B B B
-    B B B B B B B B
-    B B B B B B B B
-    B B B B B B B B
-    W W W B W W W B
-    W W W B W W W W
-    W W W B W W W W
-    W W W B W W W W
-    */
-    // 上半分を黒、下半分を白で埋め、1マスだけ空ける
-    for (let i = 0; i < board.size; i++) {
-      for (let j = 0; j < board.size; j++) {
-        if (i < 4) {
-          board.cells[i][j] = CellState.Black
-        } else {
-          board.cells[i][j] = CellState.White
-        }
-      }
-    }
-    board.cells[0][3] = CellState.Empty
-    board.cells[4][3] = CellState.Black
-    board.cells[4][7] = CellState.Black
-    board.cells[5][3] = CellState.Black
-    board.cells[6][3] = CellState.Black
-    board.cells[7][3] = CellState.Black
+    board.cells = [
+      [1, 1, 1, 0, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [2, 2, 2, 1, 2, 2, 2, 1],
+      [2, 2, 2, 1, 2, 2, 2, 2],
+      [2, 2, 2, 1, 2, 2, 2, 2],
+      [2, 2, 2, 1, 2, 2, 2, 2],
+    ]
     expect(board.isGameOver()).toBe(true)
   })
 
@@ -304,5 +259,58 @@ describe('ゲーム終了判定', () => {
     }
     board.cells[4][0] = CellState.Black
     expect(board.getWinner()).toBe(CellState.Black)
+  })
+})
+
+
+describe('AIの手の選択', () => {
+  test('最も多く石を取れる手を選択する', () => {
+    const board = new Board()
+    board.cells = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0, 1, 0, 0],
+      [0, 0, 0, 2, 2, 1, 0, 0],
+      [0, 0, 0, 2, 2, 2, 0, 0],
+      [0, 0, 0, 2, 0, 2, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
+
+    const blackMove = board.getMaxFlippableMoves(CellState.Black)
+    expect(blackMove).toMatchObject([{ row: 5, col: 3 }])
+
+    const whiteMove = board.getMaxFlippableMoves(CellState.White)
+    expect(whiteMove).toMatchObject([{ row: 0, col: 5 }])
+  })
+
+  test('最善手が複数ある場合', () => {
+    const board = new Board()
+    board.cells = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 2, 1, 0, 0, 0],
+      [0, 0, 0, 1, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]
+
+    const blackMove = board.getMaxFlippableMoves(CellState.Black)
+    expect(blackMove).toMatchObject([
+      { row: 2, col: 3 },
+      { row: 3, col: 2 },
+      { row: 4, col: 5 },
+      { row: 5, col: 4 },
+    ])
+
+    const whiteMove = board.getMaxFlippableMoves(CellState.White)
+    expect(whiteMove).toMatchObject([
+      { row: 2, col: 4 },
+      { row: 3, col: 5 },
+      { row: 4, col: 2 },
+      { row: 5, col: 3 },
+    ])
   })
 })
